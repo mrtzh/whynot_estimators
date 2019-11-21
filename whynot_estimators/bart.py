@@ -6,6 +6,7 @@ from whynot.framework import InferenceResult
 import whynot_estimators
 import whynot_estimators.utils as utils
 
+
 class CausalBart(whynot_estimators.Estimator):
     """Estimate average and individual treatment effects using causal BART.
 
@@ -26,6 +27,7 @@ class CausalBart(whynot_estimators.Estimator):
         """Import the BART package."""
         import rpy2.robjects.packages as rpackages
         from rpy2.robjects import numpy2ri
+
         numpy2ri.activate()
         if not rpackages.isinstalled("bartCause"):
             raise ImportError(f"Package {self.name} is not installed!")
@@ -73,9 +75,13 @@ class CausalBart(whynot_estimators.Estimator):
         ci_lower = utils.extract(estimates, "ci.lower")[0]
         ci_upper = utils.extract(estimates, "ci.upper")[0]
 
-        return InferenceResult(ate=ate, stderr=stderr, ci=[ci_lower, ci_upper],
-                               individual_effects=None,
-                               elapsed_time=stop_time - start_time)
+        return InferenceResult(
+            ate=ate,
+            stderr=stderr,
+            ci=[ci_lower, ci_upper],
+            individual_effects=None,
+            elapsed_time=stop_time - start_time,
+        )
 
 
 CAUSAL_BART = CausalBart()

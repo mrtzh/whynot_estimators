@@ -53,7 +53,8 @@ class DoubleML(whynot_estimators.Estimator):
         estimator = DMLCateEstimator(
             model_y=RandomForestRegressor(n_estimators=10),
             model_t=LogisticRegressionCV(cv=5, max_iter=200),
-            discrete_treatment=True)
+            discrete_treatment=True,
+        )
 
         # X is features/axes of heterogeneity, W is controls. We assume
         # assume that we care about heterogeneity for every covariate.
@@ -66,9 +67,13 @@ class DoubleML(whynot_estimators.Estimator):
         stop_time = perf_counter()
 
         # TODO: econml will soon support bootstrap uncertainty estimation.
-        return InferenceResult(ate=ate, stderr=None, ci=None,
-                               individual_effects=treatment_effects,
-                               elapsed_time=stop_time - start_time)
+        return InferenceResult(
+            ate=ate,
+            stderr=None,
+            ci=None,
+            individual_effects=treatment_effects,
+            elapsed_time=stop_time - start_time,
+        )
 
 
 DOUBLEML = DoubleML()

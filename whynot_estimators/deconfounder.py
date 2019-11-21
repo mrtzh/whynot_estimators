@@ -74,15 +74,21 @@ class Deconfounder(whynot_estimators.Estimator):
         def ppca_model(data_dim, latent_dim, num_datapoints, stddv_datapoints):
             """Return probabilistic pca model."""
             # pylint:disable-msg=no-member
-            w = ed.Normal(loc=tf.zeros([latent_dim, data_dim]),
-                          scale=tf.ones([latent_dim, data_dim]),
-                          name="w")  # parameter
-            z = ed.Normal(loc=tf.zeros([num_datapoints, latent_dim]),
-                          scale=tf.ones([num_datapoints, latent_dim]),
-                          name="z")  # local latent variable / substitute confounder
-            x = ed.Normal(loc=tf.multiply(tf.matmul(z, w), 1),
-                          scale=stddv_datapoints * tf.ones([num_datapoints, data_dim]),
-                          name="x")  # (modeled) data
+            w = ed.Normal(
+                loc=tf.zeros([latent_dim, data_dim]),
+                scale=tf.ones([latent_dim, data_dim]),
+                name="w",
+            )  # parameter
+            z = ed.Normal(
+                loc=tf.zeros([num_datapoints, latent_dim]),
+                scale=tf.ones([num_datapoints, latent_dim]),
+                name="z",
+            )  # local latent variable / substitute confounder
+            x = ed.Normal(
+                loc=tf.multiply(tf.matmul(z, w), 1),
+                scale=stddv_datapoints * tf.ones([num_datapoints, data_dim]),
+                name="x",
+            )  # (modeled) data
             return x, (w, z)
 
         def variational_model(qw_mean, qw_stddv, qz_mean, qz_stddv):
@@ -101,35 +107,49 @@ class Deconfounder(whynot_estimators.Estimator):
         stddv_datapoints = 0.1
         num_datapoints, data_dim = features.shape
 
-        model = ppca_model(data_dim=data_dim,
-                           latent_dim=latent_dim,
-                           num_datapoints=num_datapoints,
-                           stddv_datapoints=stddv_datapoints)
+        model = ppca_model(
+            data_dim=data_dim,
+            latent_dim=latent_dim,
+            num_datapoints=num_datapoints,
+            stddv_datapoints=stddv_datapoints,
+        )
 
         def target(w, z):
             """Unnormalized target density as a function of the parameters."""
-            return log_joint(data_dim=data_dim,
-                             latent_dim=latent_dim,
-                             num_datapoints=num_datapoints,
-                             stddv_datapoints=stddv_datapoints,
-                             w=w, z=z, x=features)
+            return log_joint(
+                data_dim=data_dim,
+                latent_dim=latent_dim,
+                num_datapoints=num_datapoints,
+                stddv_datapoints=stddv_datapoints,
+                w=w,
+                z=z,
+                x=features,
+            )
 
         log_q = ed.make_log_joint_fn(variational_model)
 
         def target_q(qw, qz):
-            return log_q(qw_mean=qw_mean, qw_stddv=qw_stddv,
-                         qz_mean=qz_mean, qz_stddv=qz_stddv,
-                         qw=qw, qz=qz)
+            return log_q(
+                qw_mean=qw_mean,
+                qw_stddv=qw_stddv,
+                qz_mean=qz_mean,
+                qz_stddv=qz_stddv,
+                qw=qw,
+                qz=qz,
+            )
 
         qw_mean = tf.Variable(np.ones([latent_dim, data_dim]), dtype=tf.float32)
         qz_mean = tf.Variable(np.ones([num_datapoints, latent_dim]), dtype=tf.float32)
-        qw_stddv = tf.nn.softplus(tf.Variable(-4 * np.ones([latent_dim, data_dim]),
-                                              dtype=tf.float32))
-        qz_stddv = tf.nn.softplus(tf.Variable(-4 * np.ones([num_datapoints, latent_dim]),
-                                              dtype=tf.float32))
+        qw_stddv = tf.nn.softplus(
+            tf.Variable(-4 * np.ones([latent_dim, data_dim]), dtype=tf.float32)
+        )
+        qz_stddv = tf.nn.softplus(
+            tf.Variable(-4 * np.ones([num_datapoints, latent_dim]), dtype=tf.float32)
+        )
 
-        qw, qz = variational_model(qw_mean=qw_mean, qw_stddv=qw_stddv,
-                                   qz_mean=qz_mean, qz_stddv=qz_stddv)
+        qw, qz = variational_model(
+            qw_mean=qw_mean, qw_stddv=qw_stddv, qz_mean=qz_mean, qz_stddv=qz_stddv
+        )
 
         energy = target(qw, qz)
         entropy = -target_q(qw, qz)
@@ -169,9 +189,13 @@ class Deconfounder(whynot_estimators.Estimator):
         ate = results.params[1]
         stderr = results.bse[1]
         conf_int = (ate - 1.96 * stderr, ate + 1.96 * stderr)
-        return InferenceResult(ate=ate, stderr=stderr, ci=conf_int,
-                               individual_effects=None,
-                               elapsed_time=stop_time - start_time)
+        return InferenceResult(
+            ate=ate,
+            stderr=stderr,
+            ci=conf_int,
+            individual_effects=None,
+            elapsed_time=stop_time - start_time,
+        )
 
 
 DECONFOUNDER = Deconfounder()

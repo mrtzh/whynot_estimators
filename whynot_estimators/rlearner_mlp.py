@@ -19,10 +19,15 @@ class RLearnerMLP(whynot_estimators.Estimator):
         # pylint:disable-msg=unused-import
         import causalml
 
-    def estimate_treatment_effect(self, covariates, treatment, outcome,
-                                  hidden_layer_sizes=(10, 10),
-                                  learning_rate_init=0.1,
-                                  early_stopping=True):
+    def estimate_treatment_effect(
+        self,
+        covariates,
+        treatment,
+        outcome,
+        hidden_layer_sizes=(10, 10),
+        learning_rate_init=0.1,
+        early_stopping=True,
+    ):
         """Estimate treatment effect with an R-learner and a MLP regressor.
 
         Wrapper around causalml.inference.meta.MLPTRegressor.
@@ -49,16 +54,23 @@ class RLearnerMLP(whynot_estimators.Estimator):
         from causalml.inference.meta import MLPTRegressor
 
         start_time = perf_counter()
-        nn_regressor = MLPTRegressor(hidden_layer_sizes=hidden_layer_sizes,
-                                     learning_rate_init=learning_rate_init,
-                                     early_stopping=early_stopping)
-        ate, lower_bound, upper_bound = nn_regressor.estimate_ate(covariates, treatment, outcome)
+        nn_regressor = MLPTRegressor(
+            hidden_layer_sizes=hidden_layer_sizes,
+            learning_rate_init=learning_rate_init,
+            early_stopping=early_stopping,
+        )
+        ate, lower_bound, upper_bound = nn_regressor.estimate_ate(
+            covariates, treatment, outcome
+        )
         stop_time = perf_counter()
 
-        return InferenceResult(ate=ate[0], stderr=None,
-                               ci=(lower_bound[0], upper_bound[0]),
-                               individual_effects=None,
-                               elapsed_time=stop_time - start_time)
+        return InferenceResult(
+            ate=ate[0],
+            stderr=None,
+            ci=(lower_bound[0], upper_bound[0]),
+            individual_effects=None,
+            elapsed_time=stop_time - start_time,
+        )
 
 
 RLEARNER_MLP = RLearnerMLP()

@@ -47,13 +47,18 @@ class RLearnerXBG(whynot_estimators.Estimator):
 
         start_time = perf_counter()
         xbg_regressor = XGBTRegressor()
-        ate, lower_bound, upper_bound = xbg_regressor.estimate_ate(covariates, treatment, outcome)
+        ate, lower_bound, upper_bound = xbg_regressor.estimate_ate(
+            covariates, treatment, outcome
+        )
         stop_time = perf_counter()
 
-        return InferenceResult(ate=ate[0], stderr=None,
-                               ci=(lower_bound[0], upper_bound[0]),
-                               individual_effects=None,
-                               elapsed_time=stop_time - start_time)
+        return InferenceResult(
+            ate=ate[0],
+            stderr=None,
+            ci=(lower_bound[0], upper_bound[0]),
+            individual_effects=None,
+            elapsed_time=stop_time - start_time,
+        )
 
 
 RLEARNER_XBG = RLearnerXBG()

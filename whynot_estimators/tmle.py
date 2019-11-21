@@ -34,6 +34,7 @@ class Tmle(whynot_estimators.Estimator):
         """Import the estimator and its dependencies."""
         import rpy2.robjects.packages as rpackages
         from rpy2.robjects import numpy2ri
+
         numpy2ri.activate()
         if not rpackages.isinstalled("tmle"):
             raise ImportError(f"Package {self.name} is not installed!")
@@ -86,9 +87,13 @@ class Tmle(whynot_estimators.Estimator):
         var = float(var[0])
         conf_int = (float(conf_int[0]), float(conf_int[1]))
 
-        return InferenceResult(ate=ate, stderr=np.sqrt(var),
-                               ci=conf_int, individual_effects=None,
-                               elapsed_time=stop_time - start_time)
+        return InferenceResult(
+            ate=ate,
+            stderr=np.sqrt(var),
+            ci=conf_int,
+            individual_effects=None,
+            elapsed_time=stop_time - start_time,
+        )
 
 
 TMLE = Tmle()

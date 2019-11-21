@@ -26,6 +26,7 @@ class CausalForest(whynot_estimators.Estimator):
         # pylint:disable-msg=import-outside-toplevel
         import rpy2.robjects.packages as rpackages
         from rpy2.robjects import numpy2ri
+
         numpy2ri.activate()
         if not rpackages.isinstalled("grf"):
             raise ImportError(f"Package {self.name} is not installed")
@@ -68,7 +69,9 @@ class CausalForest(whynot_estimators.Estimator):
         # rpy2 automatically handles the conversion of numpy
         # arrays into r objects. The returned forest object is an rpy2 object!
         # pylint:disable-msg=no-member
-        forest = self.grf.causal_forest(covariates, outcome, treatment, tune_parameters="True")
+        forest = self.grf.causal_forest(
+            covariates, outcome, treatment, tune_parameters="True"
+        )
 
         # Estimate the conditional average treatment effect. rpy2 semantics
         # so target.sample in the R api becomes target_sample
@@ -83,9 +86,13 @@ class CausalForest(whynot_estimators.Estimator):
         individual_effects = [item for sublist in predictions for item in sublist]
 
         conf_int = [cate - 1.96 * stderr, cate + 1.96 * stderr]
-        return InferenceResult(ate=cate, stderr=stderr, ci=conf_int,
-                               individual_effects=individual_effects,
-                               elapsed_time=stop_time - start_time)
+        return InferenceResult(
+            ate=cate,
+            stderr=stderr,
+            ci=conf_int,
+            individual_effects=individual_effects,
+            elapsed_time=stop_time - start_time,
+        )
 
 
 CAUSAL_FOREST = CausalForest()

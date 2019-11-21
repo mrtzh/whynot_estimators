@@ -7,6 +7,7 @@ from whynot.framework import InferenceResult
 import whynot_estimators
 import whynot_estimators.utils as utils
 
+
 class IPWeighting(whynot_estimators.Estimator):
     """Estimate average treatment effects via inverse propensity scores.
 
@@ -27,6 +28,7 @@ class IPWeighting(whynot_estimators.Estimator):
         """Import WeightIt and survey packages."""
         import rpy2.robjects.packages as rpackages
         from rpy2.robjects import numpy2ri, pandas2ri
+
         numpy2ri.activate()
         pandas2ri.activate()
         if not rpackages.isinstalled("WeightIt") or not rpackages.isinstalled("survey"):
@@ -80,7 +82,8 @@ class IPWeighting(whynot_estimators.Estimator):
         # performance.
         # pylint:disable-msg=no-member
         weight_obj = self.weightit.weightit(
-            propensity_formula, data=data, method="ps", estimand="ATE", stabilize=True)
+            propensity_formula, data=data, method="ps", estimand="ATE", stabilize=True
+        )
         weights = utils.extract(weight_obj, "weights")
 
         # Use survey to fit weighted glm and get robust confidence intervals.
@@ -97,9 +100,13 @@ class IPWeighting(whynot_estimators.Estimator):
 
         stop_time = perf_counter()
 
-        return InferenceResult(ate=ate, stderr=None, ci=robust_ci,
-                               individual_effects=None,
-                               elapsed_time=stop_time - start_time)
+        return InferenceResult(
+            ate=ate,
+            stderr=None,
+            ci=robust_ci,
+            individual_effects=None,
+            elapsed_time=stop_time - start_time,
+        )
 
 
 IP_WEIGHTING = IPWeighting()

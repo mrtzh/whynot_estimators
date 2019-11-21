@@ -12,34 +12,14 @@ ESTIMATORS = {
         "cran": ["dbarts"],
         "github_r": ["vdorie/bartCause"],
     },
-    "causal_forest": {
-        "python": ["rpy2"],
-        "cran": ["grf"],
-    },
-    "deconfounder": {
-        "python": ["tensorflow==1.*", "tensorflow_probability<=0.8"],
-    },
-    "doubleml": {
-        "python": ["econml"],
-    },
-    "ip_weighting": {
-        "python": ["rpy2"],
-        "cran": ["WeightIt", "survey"],
-    },
-    "matching": {
-        "python": ["rpy2"],
-        "cran": ["Matching"],
-    },
-    "rlearner": {
-        "python": ["causalml"],
-    },
-    "slearner": {
-        "python": ["causalml"],
-    },
-    "tmle": {
-        "python": ["rpy2"],
-        "cran": ["tmle", "dbarts", "gam"]
-    }
+    "causal_forest": {"python": ["rpy2"], "cran": ["grf"],},
+    "deconfounder": {"python": ["tensorflow==1.*", "tensorflow_probability<=0.8"],},
+    "doubleml": {"python": ["econml"],},
+    "ip_weighting": {"python": ["rpy2"], "cran": ["WeightIt", "survey"],},
+    "matching": {"python": ["rpy2"], "cran": ["Matching"],},
+    "rlearner": {"python": ["causalml"],},
+    "slearner": {"python": ["causalml"],},
+    "tmle": {"python": ["rpy2"], "cran": ["tmle", "dbarts", "gam"]},
 }
 
 
@@ -68,10 +48,10 @@ def r_build_found():
 
     See: https://github.com/rpy2/rpy2/blob/master/rpy2/situation.py.
     """
-    if os.environ.get('R_HOME'):
+    if os.environ.get("R_HOME"):
         return True
     try:
-        _ = subprocess.check_output(('R', 'RHOME'), universal_newlines=True)
+        _ = subprocess.check_output(("R", "RHOME"), universal_newlines=True)
     # pylint:disable-msg=broad-except
     except Exception:  # FileNotFoundError, WindowsError, etc
         return False
@@ -94,14 +74,18 @@ def install_r_package(package, location="CRAN"):
 
     # Ensure R and rpy2 are accessible.
     if not r_build_found():
-        msg = ("Unable to find R installation. Please install R and retry.\n"
-               "Installation instructions available at: "
-               "https://github.com/zykls/whynot_estimators")
+        msg = (
+            "Unable to find R installation. Please install R and retry.\n"
+            "Installation instructions available at: "
+            "https://github.com/zykls/whynot_estimators"
+        )
         raise ValueError(msg)
     try:
         import rpy2.robjects.packages as rpackages
     except ImportError:
-        raise ValueError("Unable to import rpy2. rpy2 is required to install R packages.")
+        raise ValueError(
+            "Unable to import rpy2. rpy2 is required to install R packages."
+        )
 
     if rpackages.isinstalled(package):
         return
@@ -124,9 +108,9 @@ def show_all():
     print("Name \t\t\t\t R Required?")
     for estimator, dependencies in ESTIMATORS.items():
         requires_r = False
-        if 'cran' in dependencies and dependencies['cran']:
+        if "cran" in dependencies and dependencies["cran"]:
             requires_r = True
-        elif 'github_r' in dependencies and dependencies["github_r"]:
+        elif "github_r" in dependencies and dependencies["github_r"]:
             requires_r = True
 
         print(f"{estimator} \t\t\t {requires_r}")
@@ -143,14 +127,14 @@ def install(estimator):
 
     def run_install(estimator_name):
         dependencies = ESTIMATORS[estimator_name]
-        if 'python' in dependencies:
-            for package in dependencies['python']:
+        if "python" in dependencies:
+            for package in dependencies["python"]:
                 install_python(package)
-        if 'cran' in dependencies:
-            for package in dependencies['cran']:
+        if "cran" in dependencies:
+            for package in dependencies["cran"]:
                 install_r_package(package, location="CRAN")
-        if 'github_r' in dependencies:
-            for package in dependencies['github_r']:
+        if "github_r" in dependencies:
+            for package in dependencies["github_r"]:
                 install_r_package(package, location="GITHUB")
 
     if estimator == "all":
@@ -159,9 +143,9 @@ def install(estimator):
                 run_install(estimator_name)
             # pylint:disable-msg=broad-except
             except Exception:
-                print("="*80)
+                print("=" * 80)
                 print(f"Failed to install estimator {estimator_name}!")
-                print("="*80)
+                print("=" * 80)
                 continue
     else:
         run_install(estimator)

@@ -2,7 +2,7 @@
 from abc import abstractmethod, ABCMeta
 
 
-class Estimator():
+class Estimator:
     """Generic estimator class."""
 
     __metaclass__ = ABCMeta
@@ -27,7 +27,9 @@ class Estimator():
             return False
 
     @abstractmethod
-    def estimate_treatment_effect(self, covariates, treatment, outcome, *args, **kwargs):
+    def estimate_treatment_effect(
+        self, covariates, treatment, outcome, *args, **kwargs
+    ):
         """Estimate average and individual treatment effects.
 
         Parameters
