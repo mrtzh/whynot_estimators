@@ -70,7 +70,7 @@ class CausalForest(whynot_estimators.Estimator):
         # arrays into r objects. The returned forest object is an rpy2 object!
         # pylint:disable-msg=no-member
         forest = self.grf.causal_forest(
-            covariates, outcome, treatment, tune_parameters="True"
+            covariates, outcome, treatment, tune_parameters="all"
         )
 
         # Estimate the conditional average treatment effect. rpy2 semantics
