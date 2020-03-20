@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="whynot_estimators",
-    version="0.10.13",
+    version="0.11.0",
     author="John Miller",
     author_email="miller_john@berkeley.edu",
     description="Companion package to whynot: A collection of causal estimators.",

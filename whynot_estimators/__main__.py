@@ -8,18 +8,18 @@ import click
 # Map of estimator name to python, CRAN, and R dependencies on github.
 ESTIMATORS = {
     "causal_bart": {
-        "python": ["rpy2"],
+        "python": ["rpy2==3.1.0"],
         "cran": ["dbarts"],
         "github_r": ["vdorie/bartCause"],
     },
-    "causal_forest": {"python": ["rpy2"], "cran": ["grf"],},
+    "causal_forest": {"python": ["rpy2==3.1.0"], "cran": ["grf"],},
     "deconfounder": {"python": ["tensorflow==1.*", "tensorflow_probability<=0.8"],},
     "doubleml": {"python": ["econml"],},
-    "ip_weighting": {"python": ["rpy2"], "cran": ["WeightIt", "survey"],},
-    "matching": {"python": ["rpy2"], "cran": ["Matching"],},
+    "ip_weighting": {"python": ["rpy2==3.1.0"], "cran": ["WeightIt", "survey"],},
+    "matching": {"python": ["rpy2==3.1.0"], "cran": ["Matching"],},
     "rlearner": {"python": ["causalml"],},
     "slearner": {"python": ["causalml"],},
-    "tmle": {"python": ["rpy2"], "cran": ["tmle", "dbarts", "gam"]},
+    "tmle": {"python": ["rpy2==3.1.0"], "cran": ["tmle", "dbarts", "gam"]},
 }
 
 

@@ -1,6 +1,6 @@
 """Algorithms for causal inference."""
 
-__version__ = "0.10.13"
+__version__ = "0.11.0"
 from whynot_estimators.estimator import Estimator
 from whynot_estimators.bart import CAUSAL_BART as causal_bart
 from whynot_estimators.causal_forest import CAUSAL_FOREST as causal_forest
