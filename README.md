@@ -2,7 +2,7 @@
 
 A collection of causal inference estimators implemented in Python and R to pair
 with the Python causal inference library [whynot](https://github.com/zykls/whynot). 
-For more information, check out the [documentation](https://whynot-docs.readthedocs-hosted.com/en/latest/).
+For more information, check out the [documentation](https://whynot.readthedocs.io/en/latest/).
 
 ## Installation
 You can perform a minimal installation of `whynot_estimators` with
